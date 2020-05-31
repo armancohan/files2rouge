@@ -21,6 +21,7 @@ import pyrouge
 import tempfile
 import logging
 import argparse
+import re
 
 
 def run(summ_path,
@@ -38,7 +39,8 @@ def run(summ_path,
     sys_root, model_root = [os.path.join(dirpath, _)
                             for _ in ["system", "model"]]
 
-    print("Preparing documents...", end=" ")
+    if verbose:
+        print("Preparing documents...", end=" ")
     utils.mkdirs([sys_root, model_root])
     ignored = utils.split_files(model_file=ref_path,
                                 system_file=summ_path,
@@ -46,8 +48,9 @@ def run(summ_path,
                                 system_dir=sys_root,
                                 eos=eos,
                                 ignore_empty=ignore_empty)
-    print("%d line(s) ignored" % len(ignored))
-    print("Running ROUGE...")
+    if verbose:
+        print("%d line(s) ignored" % len(ignored))
+        print("Running ROUGE...")
     log_level = logging.ERROR if not verbose else None
     r = pyrouge.Rouge155(rouge_dir=os.path.dirname(s.data['ROUGE_path']),
                          log_level=log_level)
@@ -74,9 +77,7 @@ def run(summ_path,
 
     if saveto is not None:
         saveto = open(saveto, 'w')
-    return output
-#     utils.tee(saveto, output)
-#     print("Elapsed time: %.3f seconds" % (time() - stime))
+    return r.output_to_dict(output)
 
 
 def main():
