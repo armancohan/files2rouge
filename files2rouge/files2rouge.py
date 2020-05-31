@@ -74,9 +74,9 @@ def run(summ_path,
 
     if saveto is not None:
         saveto = open(saveto, 'w')
-
-    utils.tee(saveto, output)
-    print("Elapsed time: %.3f seconds" % (time() - stime))
+    return output
+#     utils.tee(saveto, output)
+#     print("Elapsed time: %.3f seconds" % (time() - stime))
 
 
 def main():
